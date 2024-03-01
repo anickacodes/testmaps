@@ -5,6 +5,7 @@ import LocationTracker from "./LocationTracker";
 const containerStyle = {
   width: "100vw",
   height: "100vh",
+  padding: "3px"
 };
 
 const center = {
