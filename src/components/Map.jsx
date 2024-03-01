@@ -3,8 +3,8 @@ import { useState } from "react";
 import LocationTracker from "./LocationTracker";
 
 const containerStyle = {
-  width: "600px",
-  height: "555px",
+  width: "100vw",
+  height: "100vh",
 };
 
 const center = {
