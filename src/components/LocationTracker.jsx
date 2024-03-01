@@ -8,6 +8,7 @@ function LocationTracker({ onLocationChange }) {
   const [duration, setDuration] = useState(0);
   const [startLatitude, setStartLatitude] = useState(null);
   const [startLongitude, setStartLongitude] = useState(null);
+  const [path, setPath] = useState([]);
 
   useEffect(() => {
     if ("geolocation" in navigator) {
@@ -23,7 +24,7 @@ function LocationTracker({ onLocationChange }) {
           setStartLatitude(lat); // set starting latitude
           setStartLongitude(lng); // set starting longitude
         }
-
+        setPath([...path, { lat, lng }]);
         onLocationChange({ lat, lng }); // set new coord
         // send  to server
         sendLocationData(lat, lng);
@@ -82,3 +83,4 @@ function LocationTracker({ onLocationChange }) {
 }
 
 export default LocationTracker;
+

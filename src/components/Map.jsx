@@ -1,10 +1,10 @@
-import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
-import { useState } from "react";
+import React, { useState } from "react";
+import { GoogleMap, LoadScript, Marker, Polyline } from "@react-google-maps/api";
 import LocationTracker from "./LocationTracker";
 
 const containerStyle = {
-  width: "100vw",
-  height: "100vh",
+  width: "600px",
+  height: "500px",
   padding: "3px"
 };
 
@@ -14,8 +14,10 @@ const center = {
 };
 
 const apiKey = import.meta.env.VITE_MAP_API_KEY;
+
 function Map() {
   const [userLocation, setUserLocation] = useState(null);
+  const [path, setPath] = useState([]);
 
   const handleLocationChange = (location) => {
     setUserLocation(location);
@@ -23,16 +25,33 @@ function Map() {
 
   return (
     <LoadScript googleMapsApiKey={apiKey}>
-      <LocationTracker onLocationChange={handleLocationChange} />
-      <GoogleMap
+      <LocationTracker onLocationChange={(location) => {
+        handleLocationChange(location);
+        setPath((prevPath) => [...prevPath, location]);
+      }} />
+     
+        <GoogleMap
         mapContainerStyle={containerStyle}
-        center={userLocation ? userLocation : center}
-        zoom={userLocation ? 15 : 10}
-      >
-        {userLocation && (
-          <Marker position={{ lat: userLocation.lat, lng: userLocation.lng }} />
-        )}
-      </GoogleMap>
+        mapContainerClassName="map"
+          center={userLocation ? userLocation : center}
+          zoom={userLocation ? 15 : 10}
+        >
+          {userLocation && (
+            <Marker position={{ lat: userLocation.lat, lng: userLocation.lng }} />
+          )}
+          <Polyline
+            path={path.map((location) => ({
+              lat: location.lat,
+              lng: location.lng,
+            }))}
+            options={{
+              strokeColor: "#a200ff",
+              strokeOpacity: 1.0,
+              strokeWeight: 2,
+            }}
+          />
+        </GoogleMap>
+   
     </LoadScript>
   );
 }
