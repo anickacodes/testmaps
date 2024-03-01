@@ -7,19 +7,22 @@ function LocationTracker({ onLocationChange }) {
 
   useEffect(() => {
     if ("geolocation" in navigator) {
-      navigator.geolocation.getCurrentPosition(function (position) {
-        const lat = position.coords.latitude;
-        const lng = position.coords.longitude;
-
-        setLatitude(lat);
-        setLongitude(lng);
-        onLocationChange({ lat, lng }); // set new coord
-        // send  to server
-        sendLocationData(lat, lng);
-      });
-    } else {
-      console.log("This browser does not support geolocation.");
-    }
+        const watchId = navigator.geolocation.watchPosition(function (position) {
+            const lat = position.coords.latitude;
+            const lng = position.coords.longitude;
+    
+            setLatitude(lat);
+            setLongitude(lng);
+            onLocationChange({ lat, lng }); // set new coord
+            // send  to server
+            sendLocationData(lat, lng);
+          });
+    
+          // Clear watch when component unmounts
+          return () => navigator.geolocation.clearWatch(watchId);
+        } else {
+          console.log("This browser does not support geolocation.");
+        }
   }, []);
 
   useEffect(() => {
