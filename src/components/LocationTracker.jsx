@@ -6,36 +6,53 @@ function LocationTracker({ onLocationChange }) {
   const [longitude, setLongitude] = useState(null);
   const [time, setTime] = useState(null);
   const [duration, setDuration] = useState(0);
-  const [startLatitude, setStartLatitude] = useState(null);
-  const [startLongitude, setStartLongitude] = useState(null);
-  const [path, setPath] = useState([]);
+  const [initialLocation, setInitialLocation] = useState(null);
 
   useEffect(() => {
     if ("geolocation" in navigator) {
-      const watchId = navigator.geolocation.watchPosition(function (position) {
+      navigator.geolocation.getCurrentPosition(function (position) {
         const lat = position.coords.latitude;
         const lng = position.coords.longitude;
 
         setLatitude(lat);
         setLongitude(lng);
 
-        if (!time) {
-          setTime(new Date()); // set time when user logs location
-          setStartLatitude(lat); // set starting latitude
-          setStartLongitude(lng); // set starting longitude
+        if (!initialLocation) {
+          setInitialLocation({ latitude: lat, longitude: lng });
         }
-        setPath([...path, { lat, lng }]);
-        onLocationChange({ lat, lng }); // set new coord
-        // send  to server
-        sendLocationData(lat, lng);
       });
-      return () => {
-        navigator.geolocation.clearWatch(watchId); // Stop watching the location when component unmounts
-      };
     } else {
       console.log("This browser does not support geolocation.");
     }
-  }, []);
+  }, [initialLocation]);
+
+  useEffect(() => {
+    if (latitude && longitude && !time) {
+      setTime(new Date()); // set time when user logs location
+    }
+  }, [latitude, longitude, time]);
+
+  useEffect(() => {
+    const watchId = navigator.geolocation.watchPosition(function (position) {
+      const lat = position.coords.latitude;
+      const lng = position.coords.longitude;
+
+      setLatitude(lat);
+      setLongitude(lng);
+
+      if (!time) {
+        setTime(new Date()); // set time when user logs location
+      }
+
+      onLocationChange({ lat, lng }); // set new coord
+      // send to server
+      sendLocationData(lat, lng);
+    });
+
+    return () => {
+      navigator.geolocation.clearWatch(watchId); // Stop watching the location when component unmounts
+    };
+  }, [onLocationChange, time]);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -71,7 +88,7 @@ function LocationTracker({ onLocationChange }) {
         <p>
           Your exact location: <span>Latitude: {latitude}, Longitude: {longitude}</span>
           <br />
-          Starting location: <span>Latitude: {startLatitude}, Longitude: {startLongitude}</span>
+          Starting location: <span>Latitude: {initialLocation?.latitude}, Longitude: {initialLocation?.longitude}</span>
           <br />
           Time at location: {duration} seconds
         </p>
@@ -83,4 +100,3 @@ function LocationTracker({ onLocationChange }) {
 }
 
 export default LocationTracker;
-
