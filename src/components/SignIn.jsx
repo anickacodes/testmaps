@@ -11,7 +11,7 @@ function SignIn() {
   };
 
   return (
-    <div>
+    <div className='map_container'>
 <Map/>
       <div className="toggle-container">
         <label className={`toggle-label ${isVendor ? 'vendor' : 'user'}`} onClick={handleToggle}>
