@@ -7,36 +7,24 @@ function LocationTracker({ onLocationChange }) {
 
   useEffect(() => {
     if ("geolocation" in navigator) {
-        const watchId = navigator.geolocation.watchPosition(function (position) {
-            const lat = position.coords.latitude;
-            const lng = position.coords.longitude;
-    
-            setLatitude(lat);
-            setLongitude(lng);
-            onLocationChange({ lat, lng }); // set new coord
-            // send  to server
-            sendLocationData(lat, lng);
-          });
-    
-          // Clear watch when component unmounts
-          return () => navigator.geolocation.clearWatch(watchId);
-        } else {
-          console.log("This browser does not support geolocation.");
-        }
-  }, []);
+      const watchId = navigator.geolocation.watchPosition(function (position) {
+        const lat = position.coords.latitude;
+        const lng = position.coords.longitude;
 
-  useEffect(() => {
-    axios.get("http://localhost:4444/locations")
-      .then((res) => {
-        console.log("Locations fetched successfully:", res.data);
-        // we can set another state here if needed 
-      })
-      .catch((error) => {
-        console.error("Error fetching locations:", error);
+        setLatitude(lat);
+        setLongitude(lng);
+        onLocationChange({ lat, lng }); // set new coord
+        // send  to server
+        sendLocationData(lat, lng);
       });
+      return () => {
+        navigator.geolocation.clearWatch(watchId); // Stop watching the location when component unmounts
+      };
+    } else {
+      console.log("This browser does not support geolocation.");
+    }
   }, []);
 
-  
   const sendLocationData = (lat, lng) => {
     const url = import.meta.env.VITE_BASE_URL;
 
@@ -47,7 +35,7 @@ function LocationTracker({ onLocationChange }) {
 
     axios.post(`${url}/location`, data)
       .then((res) => {
-        console.log("Location data sent successfully!");
+        console.log("Location data sent successfully!", res.data);
       })
       .catch((error) => {
         console.error("Error sending location data:", error);
