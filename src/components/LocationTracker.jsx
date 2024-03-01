@@ -4,6 +4,8 @@ import axios from "axios";
 function LocationTracker({ onLocationChange }) {
   const [latitude, setLatitude] = useState(null);
   const [longitude, setLongitude] = useState(null);
+  const [time, setTime] = useState(null);
+  const [duration, setDuration] = useState(null);
 
   useEffect(() => {
     if ("geolocation" in navigator) {
@@ -13,6 +15,12 @@ function LocationTracker({ onLocationChange }) {
 
         setLatitude(lat);
         setLongitude(lng);
+
+        if (!time) {
+          setTime(new Date()); // set time when user logs location
+          setDuration(0); // initialize duration to 0
+        }
+
         onLocationChange({ lat, lng }); // set new coord
         // send  to server
         sendLocationData(lat, lng);
@@ -25,12 +33,23 @@ function LocationTracker({ onLocationChange }) {
     }
   }, []);
 
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (time) {
+        setDuration(Math.round((new Date() - time) / 1000)); // update duration every second
+      }
+    }, 1000);
+
+    return () => clearInterval(interval); // cleanup interval on unmount
+  }, [time]);
+
   const sendLocationData = (lat, lng) => {
     const url = import.meta.env.VITE_BASE_URL;
 
     const data = {
       latitude: lat,
       longitude: lng,
+      duration: duration,
     };
 
     axios.post(`${url}/location`, data)
@@ -46,7 +65,9 @@ function LocationTracker({ onLocationChange }) {
     <div>
       {latitude && longitude ? (
         <p>
-         Your exact  location: <span> Latitude: {latitude}, Longitude: {longitude}</span>
+          Your exact location: <span>Latitude: {latitude}, Longitude: {longitude}</span>
+          <br />
+          Time at location: {duration} seconds
         </p>
       ) : (
         <p>Loading location...</p>
