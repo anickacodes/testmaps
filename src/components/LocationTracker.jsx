@@ -5,7 +5,9 @@ function LocationTracker({ onLocationChange }) {
   const [latitude, setLatitude] = useState(null);
   const [longitude, setLongitude] = useState(null);
   const [time, setTime] = useState(null);
-  const [duration, setDuration] = useState(null);
+  const [duration, setDuration] = useState(0);
+  const [startLatitude, setStartLatitude] = useState(null);
+  const [startLongitude, setStartLongitude] = useState(null);
 
   useEffect(() => {
     if ("geolocation" in navigator) {
@@ -18,7 +20,8 @@ function LocationTracker({ onLocationChange }) {
 
         if (!time) {
           setTime(new Date()); // set time when user logs location
-          setDuration(0); // initialize duration to 0
+          setStartLatitude(lat); // set starting latitude
+          setStartLongitude(lng); // set starting longitude
         }
 
         onLocationChange({ lat, lng }); // set new coord
@@ -66,6 +69,8 @@ function LocationTracker({ onLocationChange }) {
       {latitude && longitude ? (
         <p>
           Your exact location: <span>Latitude: {latitude}, Longitude: {longitude}</span>
+          <br />
+          Starting location: <span>Latitude: {startLatitude}, Longitude: {startLongitude}</span>
           <br />
           Time at location: {duration} seconds
         </p>
