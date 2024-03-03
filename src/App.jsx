@@ -1,18 +1,14 @@
 import { useEffect, useState } from "react";
-// import axios from 'axios'
 import "./App.css";
 import SignIn from "./components/SignIn";
-
-// import { initMap } from "./components/map";
+// import PersonSignUp from "./components/Person/PersonSignUp";
 
 
 function App() {
 
   return (
-
-
-<SignIn/>
-
+//  <PersonSignUp/> 
+ <SignIn/> 
   );
 }
 
