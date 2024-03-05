@@ -82,25 +82,6 @@ const Mapbx = () => {
 
         mapInstance.addControl(directions, "bottom-left");
 
-        // Add user's path
-        mapInstance.addSource("user-path", {
-          type: "geojson",
-          data: userPath,
-        });
-        mapInstance.addLayer({
-          id: "user-path",
-          type: "line",
-          source: "user-path",
-          layout: {
-            "line-join": "round",
-            "line-cap": "round",
-          },
-          paint: {
-            "line-color": "#ff0000",
-            "line-width": 4,
-          },
-        });
-
         const geolocateControl = new mapboxgl.GeolocateControl({
           positionOptions: {
             enableHighAccuracy: true,
@@ -175,6 +156,13 @@ const Mapbx = () => {
         </div>
       ) : (
         <p>Loading current location...</p>
+      )}
+      {startLocation && currentLocation && (
+        <div>
+          <h2>User Path</h2>
+          <p>Start: {startLocation.lng}, {startLocation.lat}</p>
+          <p>Current: {currentLocation.lng}, {currentLocation.lat}</p>
+        </div>
       )}
     </div>
   );
