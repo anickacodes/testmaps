@@ -24,50 +24,136 @@ const Mapbx = () => {
       });
 
       mapInstance.on("style.load", () => {
+        const vendors = [
+          {
+            name: "Henry",
+            color: "rgb(102, 212, 157)",
+            Active: true,
+            lngLat: [-73.978815, 40.732109],
+          },
+          {
+            name: "Charlie",
+            color: "rgb(102, 212, 157)",
+            Active: true,
+            lngLat: [-73.972715, 40.737409],
+          },
+          {
+            name: "Robert",
+            color: "rgb(102, 212, 157)",
+            Active: true,
+            lngLat: [-73.999715, 40.739409],
+          },
+        ];
+
+        vendors.forEach(({ name, color, lngLat }) => {
+          const popup = new mapboxgl.Popup({ offset: 25 }).setText(name);
+
+          const marker = new mapboxgl.Marker({
+            rotation: -22,
+            color,
+            scale: 0.77,
+          })
+            .setLngLat(lngLat)
+            .setPopup(popup)
+            .addTo(mapInstance);
+        });
+
+        const routeSource = {
+          type: "geojson",
+          data: {
+            type: "FeatureCollection",
+            features: [],
+          },
+        };
+
+        mapInstance.addSource("route", routeSource);
+
+        const directions = new MapboxDirections({
+          accessToken: mapboxgl.accessToken,
+          unit: "metric",
+          profile: "mapbox/walking",
+          alternatives: false,
+          geometries: "geojson",
+          controls: {
+            instructions: true,
+          },
+          voiceInstructions: true,
+        });
+
+        mapInstance.addControl(directions, "bottom-left");
+
+        // Add user's path
+        mapInstance.addSource("user-path", {
+          type: "geojson",
+          data: userPath,
+        });
+        mapInstance.addLayer({
+          id: "user-path",
+          type: "line",
+          source: "user-path",
+          layout: {
+            "line-join": "round",
+            "line-cap": "round",
+          },
+          paint: {
+            "line-color": "#ff0000",
+            "line-width": 4,
+          },
+        });
+
         const geolocateControl = new mapboxgl.GeolocateControl({
           positionOptions: {
             enableHighAccuracy: true,
           },
           trackUserLocation: true,
         });
-
         mapInstance.addControl(geolocateControl);
-
-        geolocateControl.on("geolocate", (e) => {
-          const { longitude, latitude } = e.coords;
-          if (!startLocation) {
-            setStartLocation({ lng: longitude.toFixed(15), lat: latitude.toFixed(15) });
-          }
-          setCurrentLocation({ lng: longitude.toFixed(15), lat: latitude.toFixed(15) });
-          setUserPath((prevState) => ({
-            type: "FeatureCollection",
-            features: [
-              ...prevState.features,
-              {
-                type: "Feature",
-                geometry: {
-                  type: "Point",
-                  coordinates: [longitude.toFixed(15), latitude.toFixed(15)],
-                },
-                properties: {},
-              },
-            ],
-          }));
-        });
 
         setMap(mapInstance);
       });
 
       mapInstance.on("move", () => {
         const userCoordinates = mapInstance.getCenter();
-        setCurrentLocation({ lng: userCoordinates.lng.toFixed(15), lat: userCoordinates.lat.toFixed(15) });
+        setUserPath((prevState) => ({
+          type: "FeatureCollection",
+          features: [
+            ...prevState.features,
+            {
+              type: "Feature",
+              geometry: {
+                type: "Point",
+                coordinates: [userCoordinates.lng, userCoordinates.lat],
+              },
+              properties: {},
+            },
+          ],
+        }));
+      });
+
+      mapInstance.on("locationfound", (e) => {
+        setStartLocation({
+          lng: e.coords.longitude,
+          lat: e.coords.latitude,
+        });
+      });
+
+      mapInstance.on("locationerror", () => {
+        setStartLocation(null);
+      });
+
+      mapInstance.on("move", () => {
+        const userCoordinates = mapInstance.getCenter();
+        setCurrentLocation({
+          lng: userCoordinates.lng,
+          lat: userCoordinates.lat,
+        });
       });
 
       setMap(mapInstance);
     };
 
     if (!map) initializeMap();
-  }, [map, startLocation]);
+  }, [map, userPath]);
 
   return (
     <div>
@@ -92,7 +178,6 @@ const Mapbx = () => {
       )}
     </div>
   );
-  
 };
 
 export default Mapbx;
