@@ -69,6 +69,10 @@ padding: 20px;
   font-family: "Bagel Fat One", system-ui;
   background: linear-gradient(195deg, rgba(251, 187, 187, 0.887) 35%, #ff7079ea 58%, rgba(128, 0, 128, 0.652) );
 }
+
+/* .directions_container {
+  border: 2px solid white;
+} */
 /* 
 @media (max-width: 475px) {
 .map {
