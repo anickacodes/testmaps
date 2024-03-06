@@ -6,6 +6,7 @@ import {
   Polyline,
 } from "@react-google-maps/api";
 import LocationTracker from "./LocationTracker";
+import Icon from '/WMICLOGO.png'
 
 const containerStyle = {
   width: "600px",
@@ -30,7 +31,7 @@ function Map() {
     setUserLocation(location);
   };
 
-  const customMarkerIcon = "src/assets/WMICLOGO.png";
+
 
   return (
     <LoadScript googleMapsApiKey={apiKey}>
@@ -51,7 +52,7 @@ function Map() {
           <Marker
             position={{ lat: userLocation.lat, lng: userLocation.lng }}
             icon={{
-              url: customMarkerIcon,
+              url: Icon,
               scaledSize: new window.google.maps.Size(60, 60), // Size of the custom icon
             }}
           />

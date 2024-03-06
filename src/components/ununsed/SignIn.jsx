@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
-import Map from './Map';
+import React, { useState } from "react";
+import Map from "../Map";
 
-// import './SignIn.css'; 
+// import './SignIn.css';
 
 function SignIn() {
   const [isVendor, setIsVendor] = useState(false);
@@ -11,13 +11,16 @@ function SignIn() {
   };
 
   return (
-    <div className='map_container'>
-<Map/>
+    <div className="map_container">
+      <Map />
       <div className="toggle-container">
-        <label className={`toggle-label ${isVendor ? 'vendor' : 'user'}`} onClick={handleToggle}>
+        <label
+          className={`toggle-label ${isVendor ? "vendor" : "user"}`}
+          onClick={handleToggle}
+        >
           <div className="slider"></div>
         </label>
-        <span>{isVendor ? 'Vendor' : 'User'}</span>
+        <span>{isVendor ? "Vendor" : "User"}</span>
       </div>
 
       <form id="signInForm">

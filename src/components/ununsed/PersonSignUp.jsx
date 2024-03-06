@@ -1,5 +1,5 @@
 
-import '../Person/PersonSignUp.css'
+import './PersonSignUp.css'
 
 const PersonSignUp = () => {
 
