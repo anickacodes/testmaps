@@ -39,11 +39,9 @@ function LocationTracker({ onLocationChange }) {
 
       setLatitude(lat);
       setLongitude(lng);
-
       if (!time) {
         setTime(new Date()); // set time when user logs location
       }
-
       onLocationChange({ lat, lng }); // set new coord
       // send to server
       sendLocationData(lat, lng);
@@ -53,14 +51,13 @@ function LocationTracker({ onLocationChange }) {
       navigator.geolocation.clearWatch(watchId); // Stop watching the location when component unmounts
     };
   }, [onLocationChange, time]);
-
+// how often to send location
   useEffect(() => {
     const interval = setInterval(() => {
       if (time) {
-        setDuration(Math.round((new Date() - time) / 1000)); // update duration every second
+        setDuration(Math.round((new Date() - time) / 8000)); 
       }
-    }, 1000);
-
+    }, 8000);
     return () => clearInterval(interval); // cleanup interval on unmount
   }, [time]);
 
@@ -73,13 +70,13 @@ function LocationTracker({ onLocationChange }) {
       duration: duration,
     };
 
-    axios.post(`${url}/location`, data)
-      .then((res) => {
-        console.log("Location data sent successfully!", res.data);
-      })
-      .catch((error) => {
-        console.error("Error sending location data:", error);
-      });
+    // axios.post(`${url}/location`, data)
+    //   .then((res) => {
+    //     console.log("Location data sent successfully!", res.data);
+    //   })
+    //   .catch((error) => {
+    //     console.error("Error sending location data:", error);
+    //   });
   };
 
   return (
