@@ -19,7 +19,7 @@ const center = {
 };
 
 const apiKey = import.meta.env.VITE_MAP_API_KEY;
-// const customMapStyle = import.meta.env.VITE_GOOGLE_MAPID;
+const customMapStyle = import.meta.env.VITE_GOOGLE_MAPID;
 
 function Map() {
   const [userLocation, setUserLocation] = useState(null);
@@ -29,6 +29,8 @@ function Map() {
   const handleLocationChange = (location) => {
     setUserLocation(location);
   };
+
+  const customMarkerIcon = "src/assets/WMICLOGO.png";
 
   return (
     <LoadScript googleMapsApiKey={apiKey}>
@@ -43,10 +45,16 @@ function Map() {
         mapContainerClassName="map"
         center={userLocation ? userLocation : center}
         zoom={userLocation ? 15 : 10}
-        // mapId= {customMapStyle.mapId}
+        mapId= {customMapStyle.mapId}
       >
-        {userLocation && (
-          <Marker position={{ lat: userLocation.lat, lng: userLocation.lng }} />
+         {userLocation && (
+          <Marker
+            position={{ lat: userLocation.lat, lng: userLocation.lng }}
+            icon={{
+              url: customMarkerIcon,
+              scaledSize: new window.google.maps.Size(60, 60), // Size of the custom icon
+            }}
+          />
         )}
         {showRoute && (
           <Polyline
