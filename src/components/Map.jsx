@@ -19,7 +19,7 @@ const center = {
 };
 
 const apiKey = import.meta.env.VITE_MAP_API_KEY;
-const customMapStyle = import.meta.env.VITE_GOOGLE_MAPID;
+// const customMapStyle = import.meta.env.VITE_GOOGLE_MAPID;
 
 function Map() {
   const [userLocation, setUserLocation] = useState(null);
@@ -45,7 +45,7 @@ function Map() {
         mapContainerClassName="map"
         center={userLocation ? userLocation : center}
         zoom={userLocation ? 15 : 10}
-        mapId= {customMapStyle.mapId}
+        // mapId= {customMapStyle}
       >
          {userLocation && (
           <Marker
@@ -65,7 +65,7 @@ function Map() {
             options={{
               strokeColor: "#690aa0e6",
               strokeOpacity: 1.0,
-              strokeWeight: 4,
+              strokeWeight: 6,
             }}
           />
         )}
