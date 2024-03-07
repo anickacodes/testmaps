@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 
 function LocationTracker({ onLocationChange }) {
@@ -55,9 +55,9 @@ function LocationTracker({ onLocationChange }) {
   useEffect(() => {
     const interval = setInterval(() => {
       if (time) {
-        setDuration(Math.round((new Date() - time) / 8000)); 
+        setDuration(Math.round((new Date() - time) / 10000)); 
       }
-    }, 8000);
+    }, 10000);
     return () => clearInterval(interval); // cleanup interval on unmount
   }, [time]);
 
