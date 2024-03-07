@@ -1,12 +1,5 @@
-import React, { useState } from "react";
-import {
-  GoogleMap,
-  LoadScript,
-  Marker,
-  Polyline,
-} from "@react-google-maps/api";
-import LocationTracker from "./LocationTracker";
-import Icon from "/WMICLOGO.png";
+import React, { useEffect, useState } from "react";
+import { GoogleMap, LoadScript, Polyline } from "@react-google-maps/api";
 
 const containerStyle = {
   width: "600px",
@@ -22,53 +15,36 @@ const center = {
 const apiKey = import.meta.env.VITE_MAP_API_KEY;
 
 function Map() {
-  const [userLocation, setUserLocation] = useState(null);
-  const [path, setPath] = useState([]);
-  const [showRoute, setShowRoute] = useState(true);
-  const [infoWindowOpen, setInfoWindowOpen] = useState(false);
+  const [route, setRoute] = useState([]);
 
-  const handleLocationChange = (location) => {
-    setUserLocation(location);
-  };
+  useEffect(() => {
+    fetch("https://testtrackback.onrender.com/locations")
+      .then((response) => response.json())
+      .then((data) => {
+        const routeCoordinates = data.map(({ latitude, longitude }) => ({
+          lat: latitude,
+          lng: longitude,
+        }));
+        setRoute(routeCoordinates);
+      });
+  }, []);
 
   return (
-    <LoadScript googleMapsApiKey={apiKey}>
-      <LocationTracker
-        onLocationChange={(location) => {
-          handleLocationChange(location);
-          setPath((prevPath) => [...prevPath, location]);
-        }}
-      />
+    <LoadScript googleMapsApiKey={apiKey} mapId="1d113781e58102b7">
       <GoogleMap
         mapContainerStyle={containerStyle}
         mapContainerClassName="map"
-        mapId = {import.meta.env.VITE_GOOGLE_MAPID}
-        center={userLocation ? userLocation : center}
-        zoom={userLocation ? 15 : 10}
+        center={center}
+        zoom={10}
       >
-        {userLocation && (
-          <Marker
-            position={{ lat: userLocation.lat, lng: userLocation.lng }}
-            icon={{
-              url: Icon,
-              scaledSize: new window.google.maps.Size(60, 60), // Size of the custom icon
-            }}
-          >
-          </Marker>
-        )}
-        {showRoute && (
-          <Polyline
-            path={path.map((location) => ({
-              lat: location.lat,
-              lng: location.lng,
-            }))}
-            options={{
-              strokeColor: "#690aa0e6",
-              strokeOpacity: 1.0,
-              strokeWeight: 4.4,
-            }}
-          />
-        )}
+        <Polyline
+          path={route}
+          options={{
+            strokeColor: "#690aa0e6",
+            strokeOpacity: 1.0,
+            strokeWeight: 6,
+          }}
+        />
       </GoogleMap>
     </LoadScript>
   );

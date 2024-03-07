@@ -70,13 +70,13 @@ function LocationTracker({ onLocationChange }) {
       duration: duration,
     };
 
-    // axios.post(`${url}/location`, data)
-    //   .then((res) => {
-    //     console.log("Location data sent successfully!", res.data);
-    //   })
-    //   .catch((error) => {
-    //     console.error("Error sending location data:", error);
-    //   });
+    axios.post(`${url}/location`, data)
+      .then((res) => {
+        console.log("Location data sent successfully!", res.data);
+      })
+      .catch((error) => {
+        console.error("Error sending location data:", error);
+      });
   };
 
   return (
