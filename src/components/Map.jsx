@@ -32,7 +32,7 @@ function Map() {
   };
 
   return (
-    <LoadScript googleMapsApiKey={apiKey} >
+    <LoadScript googleMapsApiKey={apiKey}>
       <LocationTracker
         onLocationChange={(location) => {
           handleLocationChange(location);
@@ -42,7 +42,7 @@ function Map() {
       <GoogleMap
         mapContainerStyle={containerStyle}
         mapContainerClassName="map"
-        mapId = {import.meta.env.VITE_GOOGLE_MAPID}
+        mapId={import.meta.env.VITE_GOOGLE_MAPID}
         center={userLocation ? userLocation : center}
         zoom={userLocation ? 15 : 10}
       >
@@ -53,9 +53,7 @@ function Map() {
               url: Icon,
               scaledSize: new window.google.maps.Size(60, 60), // Size of the custom icon
             }}
-          >
-            )}
-          </Marker>
+          ></Marker>
         )}
         {showRoute && (
           <Polyline
