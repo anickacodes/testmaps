@@ -6,7 +6,7 @@ import {
   Polyline,
 } from "@react-google-maps/api";
 import LocationTracker from "./LocationTracker";
-import Icon from '/WMICLOGO.png'
+import Icon from "/WMICLOGO.png";
 
 const containerStyle = {
   width: "600px",
@@ -20,18 +20,16 @@ const center = {
 };
 
 const apiKey = import.meta.env.VITE_MAP_API_KEY;
-// const customMapStyle = import.meta.env.VITE_GOOGLE_MAPID;
 
 function Map() {
   const [userLocation, setUserLocation] = useState(null);
   const [path, setPath] = useState([]);
   const [showRoute, setShowRoute] = useState(true);
+  const [infoWindowOpen, setInfoWindowOpen] = useState(false);
 
   const handleLocationChange = (location) => {
     setUserLocation(location);
   };
-
-
 
   return (
     <LoadScript googleMapsApiKey={apiKey}>
@@ -44,18 +42,19 @@ function Map() {
       <GoogleMap
         mapContainerStyle={containerStyle}
         mapContainerClassName="map"
+        mapId = {import.meta.env.VITE_GOOGLE_MAPID}
         center={userLocation ? userLocation : center}
         zoom={userLocation ? 15 : 10}
-        // mapId= {customMapStyle}
       >
-         {userLocation && (
+        {userLocation && (
           <Marker
             position={{ lat: userLocation.lat, lng: userLocation.lng }}
             icon={{
               url: Icon,
               scaledSize: new window.google.maps.Size(60, 60), // Size of the custom icon
             }}
-          />
+          >
+          </Marker>
         )}
         {showRoute && (
           <Polyline
@@ -66,7 +65,7 @@ function Map() {
             options={{
               strokeColor: "#690aa0e6",
               strokeOpacity: 1.0,
-              strokeWeight: 6,
+              strokeWeight: 4.4,
             }}
           />
         )}
